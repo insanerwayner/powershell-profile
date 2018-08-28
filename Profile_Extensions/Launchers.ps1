@@ -44,8 +44,7 @@ Function Launch-Paylocity
 
 Function Enter-Clonezilla
 	{
-	#Enter-SSHSession -User administrator -Hostname 192.168.103.145 -Password (ConvertFrom-SecureStringToPlaintext ( Get-XMLPassword -Name Clonezilla -Type Password ))
-	Enter-SSHSession -User administrator -Hostname 192.168.103.145 -Password ( Get-XMLPassword -Name Clonezilla -Type Password -AsPlainText $True )
+	Enter-SSHSession -User administrator -Hostname 192.168.103.254 -Password ( Get-XMLPassword -Name Clonezilla -Type Password -AsPlainText $True )
 	}
 
 Function Start-ScreenConnect($computer)
@@ -58,20 +57,27 @@ Function Manage-EqualLogic
 	."$Scripts\Java\groupmgr.jnlp"
 	}
 
-Function Launch-Video($VideoID)
+Function Launch-Video($VideoID,[switch]$VLC)
 	{
 	$url = "https://www.youtube.com/embed/$VideoID"
-	$ie = new-object -ComObject "InternetExplorer.Application"
-	$ie.MenuBar = $False
-	$ie.StatusBar = $False
-	$ie.ToolBar = $False
-	$ie.AddressBar = $False
-	$ie.Top = 600
-	$ie.Left = 1100
-	$ie.Width = 480
-	$ie.Height = 298
-	$ie.Navigate($url)
-	$ie.visible = $True
+        if ( $VLC )
+            {
+            ."C:\Program Files\VideoLAN\vlc\vlc.exe" $url
+            }
+        else
+            {
+            $ie = new-object -ComObject "InternetExplorer.Application"
+            $ie.MenuBar = $False
+            $ie.StatusBar = $False
+            $ie.ToolBar = $False
+            $ie.AddressBar = $False
+            $ie.Top = 600
+            $ie.Left = 1100
+            $ie.Width = 480
+            $ie.Height = 298
+            $ie.Navigate($url)
+            $ie.visible = $True
+            }
 	}
 
 Function Search-YouTube($query, $results=10)
@@ -185,6 +191,9 @@ Function Select-AdministrativeTool
 
 Function Get-ClosingTime
     {
+    param(
+        [switch]$ShutDown
+        )
     $ClosingTime = Get-Date "$(Get-Date -Format "MM-dd-yy") 5:00PM"
     while ( (Get-Date) -le $ClosingTime )
             {
@@ -192,5 +201,18 @@ Function Get-ClosingTime
             $Countdown = $ClosingTime - $Date
             Write-Host "`r$(Get-Date $Date -Format "hh:mm:ss") Countdown: -$($Countdown.Hours):$($Countdown.Minutes):$($Countdown.Seconds):$($Countdown.milliseconds)   " -ForegroundColor Yellow -NoNewLine
             }
-    sd -f
+    if ( $ShutDown )
+        {   
+        sd -f
+        }
+    else
+        {
+        Write-Host "Go Home!" -ForegroundColor Green
+        }
     }
+
+Function Launch-VisualTime
+    {
+    ."\\misfs1\Global\Meeting Room Scheduler\visualtime.exe" -URL=http://missched1/visualtime
+    }
+

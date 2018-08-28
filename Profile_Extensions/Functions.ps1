@@ -5,7 +5,7 @@
 
 Function Get-VerseoftheDay
 	{
-	$Scripture = (Get-BibleVerse -book psalm -Chapter 4 -Verse 20 -Type Json | ConvertFrom-Json)[0] 
+	$Scripture = (Get-BibleVerse -VerseOfTheDay -Type Json | ConvertFrom-Json)[0] 
 	$book = $Scripture.bookname 
 	$chap = $Scripture.chapter 
 	$verse = $Scripture.verse 
@@ -21,7 +21,7 @@ Function Get-VerseoftheDay
 	}
 
 Function Color-LS
-{
+    {
     $regex_opts = ([System.Text.RegularExpressions.RegexOptions]::IgnoreCase `
           -bor [System.Text.RegularExpressions.RegexOptions]::Compiled)
     $fore = $Host.UI.RawUI.ForegroundColor
@@ -34,36 +34,36 @@ Function Color-LS
 
     Invoke-Expression ("Get-ChildItem $args") | ForEach-Object {
         if ($_.GetType().Name -eq 'DirectoryInfo') 
-        {
+            {
             $Host.UI.RawUI.ForegroundColor = 'Cyan'
             echo $_
             $Host.UI.RawUI.ForegroundColor = $fore
-        }
+            }
         elseif ($compressed.IsMatch($_.Name)) 
-        {
+            {
             $Host.UI.RawUI.ForegroundColor = 'DarkGreen'
             echo $_
             $Host.UI.RawUI.ForegroundColor = $fore
-        }
+            }
         elseif ($executable.IsMatch($_.Name))
-        {
+            {
             $Host.UI.RawUI.ForegroundColor = 'Yellow'
             echo $_
             $Host.UI.RawUI.ForegroundColor = $fore
-        }
+            }
         elseif ($text_files.IsMatch($_.Name))
-        {
+            {
             $Host.UI.RawUI.ForegroundColor = 'White'
             echo $_
             $Host.UI.RawUI.ForegroundColor = $fore
- Write-Host "_"
-	       }
+            Write-Host "_"
+	    }
         else
-        {
+            {
             echo $_
+            }
         }
     }
-}
 
 Function Enter-SSHSession($Hostname,$User,$Password,$Port=22)
 	{
@@ -95,7 +95,6 @@ Function Sync-Files
 	Get-ChildItem $Docs\"Remote Assistance Logs" | Remove-Item -Confirm:$False
 	robocopy C:\Users\wreeves\Documents \\misfs1\wreeves\Documents /MIR /FFT /Z /XA:H /W:5
 	}
-
 
 Function Get-UserVariable ($Name = '*')
 	{
@@ -129,7 +128,7 @@ Function Get-FolderSize
 	$item | fl Name, Size
 	}
 
-Function Get-WeatherPicture($City="McKinney") 
+Function Get-WeatherPicture($City="75069") 
 	{
 	if ($City -eq $null)
 		{
@@ -159,12 +158,8 @@ Function Get-WeekOfYear
 	Get-Date -UFormat %V
 	}
 
-Function Send-FileHome($filename,$destination)
+Function Send-FileHome($FileName,$Destination)
 	{
-	if ( !(get-process kageant) )
-		{
-		kageant "C:\Users\wreeves\Documents\WayneKeyGen\WaynePriv.ppk"
-		}
 	kscp -P 2200 $filename wayne@darthwayne.duckdns.org:/home/wayne/$destination
 	}
 
@@ -182,18 +177,32 @@ Function Search-ArchWiki
         [Parameter(Mandatory=$True)]
         [string]$Query
     )
-    $Query = $Query.Replace(" ","+")
-    $URL = "https://wiki.archlinux.org/index.php?search=$($Query)&title=Special%3ASearch&profile=default&fulltext=1"
+    if ( $Query -ne $null )
+        {
+        $Query = $Query.Replace(" ","+")
+        $URL = "https://wiki.archlinux.org/index.php?search=$($Query)&title=Special%3ASearch&profile=default&fulltext=1"
+        }
+    else
+        {
+        $URL = "https://wiki.archlinux.org"
+        }
     Start-Process $URL
     }
 
 Function Search-MISWiki
     {
     param(
-        [Parameter(Mandatory=$True)]
-        [string]$Query
-    )
-    $Query = $Query.Replace(" ","+")
-    $URL = "http://miswiki/doku.php?do=search&id=$($Query)"
+            [Parameter(Mandatory=$False)]
+            [string]$Query
+         )
+    if ( $Query -ne $null )
+        {
+        $Query = $Query.Replace(" ","+")
+        $URL = "http://miswiki/doku.php?do=search&id=$($Query)"
+        }
+    else
+        {
+        $URL = "http://miswiki"
+        }
     Start-Process $URL
     }

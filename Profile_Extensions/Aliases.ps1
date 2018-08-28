@@ -25,6 +25,8 @@ Set-Alias kickoff Disconnect-CurrentUser
 Set-Alias kitrix Disconnect-CitrixSession
 Set-Alias arch Search-ArchWiki
 Set-Alias wiki Search-MISWiki
+Set-Alias touch new-item
+Set-Alias bible Get-BibleVerse
 
 # Launcher Aliases #
 Set-Alias anasazi Launch-Anasazi
@@ -44,3 +46,4 @@ Set-Alias wayne SSH-Wayne
 Set-Alias countdown Get-ClosingTime
 Set-Alias share Launch-SharePoint
 Set-Alias mis Launch-MISSharePoint
+Set-Alias visualtime Launch-VisualTime
