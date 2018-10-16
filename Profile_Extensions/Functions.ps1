@@ -10,7 +10,7 @@ Function Get-VerseoftheDay
 	$chap = $Scripture.chapter 
 	$verse = $Scripture.verse 
 	$ref = $book+" "+$chap+":"+$verse
-	$txt = ('"' + $Scripture.text + '"').replace(' "','"')
+	$txt = ('"' + $Scripture.text + '"').replace(' "','"') -Replace "  ", " "
 	$space = " "*($txt.length - $ref.length)
         $border = ("="*$($txt.length)).substring(0, [System.Math]::Min(240, $txt.length))
         Write-Host $border -ForegroundColor DarkGray
@@ -119,13 +119,13 @@ Function Get-FolderSize
 	[parameter(ValueFromPipelineByPropertyName)]
 	$FullName = (pwd),
 	[ValidateSet('TB', 'GB', 'MB', 'KB')]
-	$unit = "GB"
+	$Unit = "GB"
 	)
 	$munit = "1$($unit)"
 	$item = Get-Item $Fullname
 	$colitems = (Get-ChildItem $Fullname -R | Measure-Object -property length -sum)
 	$item | Add-Member -MemberType NoteProperty -Name Size -Value ("{0:N2}" -f ($colItems.sum / $munit) + " $($unit)")
-	$item | fl Name, Size
+	$item | select Mode, LastWriteTime, Size, Name
 	}
 
 Function Get-WeatherPicture($City="75069") 
@@ -206,3 +206,60 @@ Function Search-MISWiki
         }
     Start-Process $URL
     }
+
+Function Reload-misModules
+    {
+    get-module mis* | remove-module | import-module
+    }
+
+Function Get-UserInfo
+    {
+    Param(
+        [Parameter(
+            Position=0
+        )]
+        [string]$Name,
+        [Parameter(
+            Position=1
+        )]
+        [string]$Title,
+        [Parameter(
+            Position=2
+        )]
+        [string]$Department,
+        [Parameter(
+            Position=3
+        )]
+        [string]$Office,
+
+        [Parameter(
+            Position=4
+        )]
+        [string]$Phone
+
+    )
+    If ( $Name )
+        {
+        $Name = "(|(name=*$($Name)*)(samaccountname=*$($Name)*))"
+        }
+    
+    If ( $Department )
+        {
+        $Department = "(department=*$($Department)*)"
+        }
+    If ( $Title )
+        {
+        $Title = "(title=*$($Title)*)"
+        }
+    If ( $Office )
+        {
+        $Office = "(physicalDeliveryOfficeName=*$($Office)*)"
+        }
+    If ( $Phone )
+        {
+        $Phone = "(|(telephoneNumber=*$($Phone)*)(mobile=*$($Phone)*))"
+        }
+    $SearchString = "(&$($Name)$($Office)$($Department)$($Phone)$($Title)$($Phone))"
+    Get-ADUser -ldapfilter $SearchString -Properties Office, Department, Title, MobilePhone, OfficePhone | ft Name, Title, Department, Office, OfficePhone, MobilePhone
+    }
+

@@ -27,6 +27,8 @@ Set-Alias arch Search-ArchWiki
 Set-Alias wiki Search-MISWiki
 Set-Alias touch new-item
 Set-Alias bible Get-BibleVerse
+Set-Alias mismod Reload-misModules
+Set-Alias info Get-UserInfo
 
 # Launcher Aliases #
 Set-Alias anasazi Launch-Anasazi
