@@ -231,12 +231,19 @@ Function Get-UserInfo
             Position=3
         )]
         [string]$Office,
-
         [Parameter(
             Position=4
         )]
-        [string]$Phone
-
+        [string]$Phone,
+        [Parameter(
+            Position=5
+        )]
+        [ValidateSet("Name","Title","Department","Office","Phone")]
+        [string]$SortBy="Name",
+        [Parameter(
+            Position=6
+        )]
+        [switch]$Descending
     )
     If ( $Name )
         {
@@ -259,7 +266,17 @@ Function Get-UserInfo
         {
         $Phone = "(|(telephoneNumber=*$($Phone)*)(mobile=*$($Phone)*))"
         }
+    If ( $Descending )
+        {
+        $Descending=$True
+        }
+    Else
+        {
+        $Descending=$False
+        }
     $SearchString = "(&$($Name)$($Office)$($Department)$($Phone)$($Title)$($Phone))"
-    Get-ADUser -ldapfilter $SearchString -Properties Office, Department, Title, MobilePhone, OfficePhone | ft Name, Title, Department, Office, OfficePhone, MobilePhone
+    Get-ADUser -ldapfilter $SearchString -Properties Office, Department, Title, MobilePhone, OfficePhone | 
+        Select-Object Name, Title, Department, Office, OfficePhone, MobilePhone | 
+            Sort-Object -Property $SortBy -Descending:$Descending | Format-Table
     }
 
