@@ -73,7 +73,6 @@
     }
     $url += "&type=$($Type)&formatting=$($Formatting)"
     $url = $url.ToLower()
- 
     $result = Invoke-WebRequest -Uri $url
     if($result) {
         $result.Content
