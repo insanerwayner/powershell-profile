@@ -92,8 +92,18 @@ Function Get-NewDCs
 
 Function Sync-Files
 	{
-	Get-ChildItem $Docs\"Remote Assistance Logs" | Remove-Item -Confirm:$False
-	robocopy C:\Users\wreeves\Documents \\misfs1\wreeves\Documents /MIR /FFT /Z /XA:H /W:5
+        param(
+            [Switch]$Download
+            )
+        If ( !$Download )
+            {
+            Get-ChildItem $Docs\"Remote Assistance Logs" | Remove-Item -Confirm:$False
+            robocopy C:\Users\wreeves\Documents \\misfs1\wreeves\Documents /MIR /FFT /Z /XA:H /W:5
+            }
+        Else 
+            {
+            robocopy \\misfs1\wreeves\Documents C:\Users\wreeves\Documents /MIR /FFT /Z /XA:H /W:5
+            }
 	}
 
 Function Get-UserVariable ($Name = '*')
@@ -168,7 +178,7 @@ Function Get-IPInfo
     param($ComputerName="localhost")
     get-wmiobject win32_networkadapterconfiguration -computername $computername | 
         Where-Object { $_.ipaddress -ne $null } | 
-            Select-Object Description, IPaddress, IPSubnet, DefaultIPGateway, DNSServerSearchOrder, MacAddress
+            Select-Object Description, IPaddress, IPSubnet, DefaultIPGateway, DNSServerSearchOrder, DNSDomain, MacAddress
     }
 
 Function Search-ArchWiki
@@ -280,3 +290,77 @@ Function Get-UserInfo
             Sort-Object -Property $SortBy -Descending:$Descending | Format-Table
     }
 
+Function Send-Helpdesk
+    {
+    param(
+        $User
+        )
+    $Body = @'
+<h2 id="ways-to-submit-a-ticket-with-mis-in-order-of-preference">Ways to Submit a Ticket with MIS (in order of preference)</h2>
+<ul>
+<li><p>Use <strong>ManageEngine Service Desk</strong> on your desktop.</p></li>
+<li><p>Send email to <strong>mis_helpdesk@lifepathsystems.org</strong></p></li>
+<li><p>Call Ext <strong>6199</strong> (When the other two methods are unavailable or you are locked out)</p></li>
+</ul>
+'@
+    $User = (Select-User $User).samaccountname
+    Send-MailMessage -to "$($User)@lifepathsystems.org" -from "donotreply@lifepathsystems.local" -subject "How to Submit an MIS Request" -BodyAsHtml $Body -smtpserver MISEXCH01.ccmhmr.local
+    }
+
+Function Get-DefaultPrinter
+    {
+    param(
+        $Computer
+        )
+    $Computer = (Select-Computer $Computer).Name
+    $Reg = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey('currentuser', $Computer)
+    $RegKey= $Reg.OpenSubKey('Software\Microsoft\Windows NT\CurrentVersion\Windows')
+    $DefaultPrinter = $RegKey.GetValue("Device")
+    $DefaultPrinter | ConvertFrom-Csv -Header Name, Provider, Order| Select Name
+    }
+
+Function Get-OutlookCalendar 
+{ 
+  <# 
+   .Synopsis 
+    This function returns appointment items from default Outlook profile 
+   .Description 
+    This function returns appointment items from default Outlook profile. It 
+    uses the Outlook interop assembly to use the olFolderCalendar enumeration. 
+    It creates a custom object consisting of Subject, Start, Duration, Location 
+    for each appointment item.  
+   .Example 
+    Get-OutlookCalendar |  
+    where-object { $_.start -gt [datetime]"5/10/2011" -AND $_.start -lt ` 
+    [datetime]"5/17/2011" } | sort-object Duration 
+    Displays subject, start, duration and location for all appointments that 
+    occur between 5/10/11 and 5/17/11 and sorts by duration of the appointment. 
+    The sort is shortest appointment on top.  
+   .Notes 
+    NAME:  Get-OutlookCalendar 
+    AUTHOR: ed wilson, msft 
+    LASTEDIT: 05/10/2011 08:36:42 
+    KEYWORDS: Microsoft Outlook, Office 
+    HSG: HSG-05-24-2011 
+   .Link 
+     Http://www.ScriptingGuys.com/blog 
+ #Requires -Version 2.0 
+ #> 
+ Add-type -assembly "Microsoft.Office.Interop.Outlook" | out-null 
+ $olFolders = "Microsoft.Office.Interop.Outlook.OlDefaultFolders" -as [type]  
+ $outlook = new-object -comobject outlook.application 
+ $namespace = $outlook.GetNameSpace("MAPI") 
+ $folder = $namespace.getDefaultFolder($olFolders::olFolderCalendar) 
+ $folder.items | 
+ Select-Object -Property Subject, Start, Duration, Location 
+} #end function Get-OutlookCalendar
+
+Function Get-UpcomingAppointments
+    {
+    param(
+        [int]
+        $DaysinAdvance = 1
+        )
+    $Today = Get-Date -Date (get-date).Date
+    Get-OutlookCalendar | Where-Object { $_.Start -gt $Today -and $_.Start -le $Today.adddays($DaysinAdvance) }
+    }

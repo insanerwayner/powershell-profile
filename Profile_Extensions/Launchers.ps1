@@ -80,7 +80,7 @@ Function Launch-Video($VideoID,[switch]$VLC)
             }
 	}
 
-Function Search-YouTube($query, $results=10)
+Function Search-YouTube($query, $results=10,[switch]$VLC)
     {
     $params = @{
 		type='video';
@@ -96,7 +96,14 @@ Function Search-YouTube($query, $results=10)
         Write-Host "$i. $($response.items[$i-1].snippet.title)" -ForegroundColor Cyan
         }
     $Selection = Read-host "Selection"
-    Launch-Video -VideoID ($response.items[$selection-1].id.videoId)
+    if ( $VLC )
+        {
+        Launch-Video -VideoID ($response.items[$selection-1].id.videoId) -VLC
+        }
+    else
+        {
+        Launch-Video -VideoID ($response.items[$selection-1].id.videoId)
+        }
     }
 
 Function Launch-CMBHS
@@ -127,7 +134,7 @@ Function Launch-SharePoint
 Function SSH-Wayne
 	{
         #kageant "C:\Users\wreeves\Documents\WayneKeyGen\WaynePriv.ppk"
-	kitty -load wayne
+	putty-url -load wayne
 	}
 
 Function Select-AdministrativeTool
@@ -189,12 +196,14 @@ Function Select-AdministrativeTool
 			}
 	}
 
-Function Get-ClosingTime
+Function Start-Countdown
     {
     param(
-        [switch]$ShutDown
+        [switch]$ShutDown,
+        [string]$Time = "5:00PM",
+        [string]$Message = "Go Home!"
         )
-    $ClosingTime = Get-Date "$(Get-Date -Format "MM-dd-yy") 5:00PM"
+    $ClosingTime = Get-Date "$(Get-Date -Format "MM-dd-yy") $($Time)"
     while ( (Get-Date) -le $ClosingTime )
             {
             $Date = Get-Date 
@@ -207,7 +216,7 @@ Function Get-ClosingTime
         }
     else
         {
-        Write-Host "Go Home!" -ForegroundColor Green
+        Write-Host $Message -ForegroundColor Green
         }
     }
 
@@ -216,3 +225,23 @@ Function Launch-VisualTime
     ."\\misfs1\Global\Meeting Room Scheduler\visualtime.exe" -URL=http://missched1/visualtime
     }
 
+Function Launch-Radio
+    {
+    if ( Get-Process vlc -ErrorAction SilentlyContinue )
+        {
+        Write-Host "Killing Radio" -ForegroundColor Yellow
+        Get-Process vlc | Stop-Process 
+        }
+    else
+        {
+        Write-Host "Launching Radio" -ForegroundColor Green
+        ."C:\Program Files\VideoLAN\VLC\vlc.exe" -I null --play-and-exit "~/kxtlive128.m3u"
+        }
+    }
+
+Function Launch-DefaultTabs
+    {
+    helpdesk; sleep -milliseconds 750
+    screen; sleep  -milliseconds 750
+    wiki
+    }

@@ -29,6 +29,7 @@ Set-Alias touch new-item
 Set-Alias bible Get-BibleVerse
 Set-Alias mismod Reload-misModules
 Set-Alias info Get-UserInfo
+Set-Alias dleases Get-DHCPServerv4Lease
 
 # Launcher Aliases #
 Set-Alias anasazi Launch-Anasazi
@@ -45,7 +46,9 @@ Set-alias crd Launch-ChromeRemoteDesktop
 Set-Alias cmbhs Launch-CMBHS
 Set-Alias dell Launch-DellSupport
 Set-Alias wayne SSH-Wayne
-Set-Alias countdown Get-ClosingTime
+Set-Alias countdown Start-Countdown
 Set-Alias share Launch-SharePoint
 Set-Alias mis Launch-MISSharePoint
 Set-Alias visualtime Launch-VisualTime
+Set-Alias radio Launch-Radio
+Set-Alias tabs Launch-DefaultTabs
