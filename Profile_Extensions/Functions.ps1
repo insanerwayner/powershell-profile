@@ -1,4 +1,9 @@
-﻿Function Wake-BoardCloset
+﻿Function Quit-PowerShell
+    {
+    exit
+    }
+
+Function Wake-BoardCloset
 	{
 	Send-WOL 48:4D:7E:CF:41:4A
 	}
@@ -149,6 +154,7 @@ Function Get-WeatherPicture($City="75069")
 
 Function Suspend-Computer
 	{
+        Add-Type -AssemblyName System.Windows.Forms
 	# 1. Define the power state you wish to set, from the
 	#    System.Windows.Forms.PowerState enumeration.
 	$PowerState = [System.Windows.Forms.PowerState]::Suspend;
@@ -363,4 +369,41 @@ Function Get-UpcomingAppointments
         )
     $Today = Get-Date -Date (get-date).Date
     Get-OutlookCalendar | Where-Object { $_.Start -gt $Today -and $_.Start -le $Today.adddays($DaysinAdvance) }
+    }
+
+Function Clean-TempAndDownloads
+    {
+    "C:\Temp\", "C:\users\wreeves\Downloads\" | foreach `
+        {
+        $Folder = $_
+        "*.jnlp", "SKM*.PDF" | foreach `
+            {
+            $FileType = $_
+            Get-ChildItem -Path (Join-Path $Folder $Filetype) | Remove-Item
+            }
+        }
+    }
+
+Function Open-RemoteFileWithVim
+    {
+    param(
+        $FilePath
+        )
+    $FilePath = $FilePath.Replace("/","\")
+    If ( !(Test-Path $FilePath) )
+        {
+        $FileName = $FilePath.Split("\") | Select-Object -Last 1
+        $ParentPath = $Filepath.Trimend($FileName)
+        $ParentPath = (Get-Item $ParentPath).FullName.Substring(0,$ParentPath.length -1)
+        }
+    Else
+        {
+        $FilePath = Get-Item $FilePath
+        $ParentPath = $FilePath.Directory.FullName
+        $FileName = $FilePath.Name
+        }
+    $TempDrive = New-PSDrive -Name W -PSProvider FileSystem -Root $ParentPath -Scope Global -Persist 
+    $NewPath = Join-Path 'W:\' $FileName
+    vim $NewPath
+    Remove-PSDrive -Name W
     }

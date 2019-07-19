@@ -15,7 +15,11 @@ If ( Test-Path $NetHome)
     {
     $null = Sync-Files
     }
-Get-VerseoftheDay
+If ( Test-Connection labs.bible.org -Quiet -Count 1 )
+    {
+    Get-VerseoftheDay
+    }
+Clean-TempAndDownloads
 Cal
 
 # Chocolatey Profile

@@ -15,21 +15,9 @@ Function Launch-CMBHS
 
 Function Launch-Anasazi
 	{
-	#param(
-	#[ValidateSet("Live", "Train", "Test")]
-	#$Version = "Live"
-	#)
-	#Show-Desktop
-	$staffid | clip
-	$Launch = "$($Version) Anasazi Central"
-	$runpath = "C:\Program Files (x86)\Citrix\ICA Client\SelfServicePlugin\SelfService.exe"
-	.$runpath -showAppPicker
-	#.$runpath -rmPrograms | Out-Null
-	#.$runpath -poll | Out-Null
-	#.$runpath -qlaunch $Launch
-	#$ica = "https://misctrx1.ccmhmr.local/Citrix/Lifepath/resources/v2/WGVuQXBwNi41LkxpdmUgQW5hc2F6aSBDZW50cmFs/launch/ica"
-	#.$runpath -launch -s lifepath-80143580 -CitrixID "lifepath-80143580@@XenApp6.5.Live Anasazi Central" -ica $ica -cmdline
-	#.(get-childitem 
+	."C:\Program Files (x86)\Citrix\ICA Client\SelfServicePlugin\SelfService.exe" -launch -reg "Software\Microsoft\Windows\CurrentVersion\Uninstall\lifepath-80143580@@XenApp6.5.Live Anasazi Central" -startmenuShortcut
+        Get-XMLPassword -Name Anasazi -Type Password -AsPlainText $True | clip
+        $null = Start-Job -ScriptBlock { sleep 30; "" | clip } 
 	}
 
 Function Launch-AssetInventory
@@ -130,6 +118,10 @@ Function Launch-SharePoint
 	{
 	Start-Process "http://sharepoint"
 	}
+Function Launch-NextCloud
+        {
+        Start-Process "https://darthwayne.yourownnet.cloud:9543"
+        }
 
 Function SSH-Wayne
 	{
