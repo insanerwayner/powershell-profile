@@ -14,7 +14,7 @@ Function prompt
 		$location = $location.replace('admin9491\b$\chickerson','ChadHome')
 		$location = $location.replace('Users\wreeves','~')
 		$location = $location.replace('Documents\WindowsPowershell\Scripts','Scripts')
-		$location = $location.replace('Documents\WindowsPowershell','PSHome')
+		$location = $location.replace('Documents\WindowsPowershell','PSRoot')
 		$location = $location.replace('Scripts\Security','Security')
 		#$location = $location.replace('\','/')
 		#$location = $location.replace('C:','')

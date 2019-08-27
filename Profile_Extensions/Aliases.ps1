@@ -31,6 +31,8 @@ Set-Alias mismod Reload-misModules
 Set-Alias info Get-UserInfo
 Set-Alias dleases Get-DHCPServerv4Lease
 Set-Alias ":q" Quit-PowerShell
+Set-Alias rpass Reset-Password
+Set-Alias randp New-RandomPassword
 
 # Launcher Aliases #
 Set-Alias ana Launch-Anasazi
@@ -47,6 +49,7 @@ Set-alias crd Launch-ChromeRemoteDesktop
 Set-Alias cmbhs Launch-CMBHS
 Set-Alias dell Launch-DellSupport
 Set-Alias wayne SSH-Wayne
+Set-Alias socks SSH-Socks
 Set-Alias countdown Start-Countdown
 Set-Alias share Launch-SharePoint
 Set-Alias cloud Launch-NextCloud

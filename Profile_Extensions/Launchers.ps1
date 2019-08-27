@@ -129,6 +129,12 @@ Function SSH-Wayne
 	putty-url -load wayne
 	}
 
+Function SSH-Socks
+	{
+        #kageant "C:\Users\wreeves\Documents\WayneKeyGen\WaynePriv.ppk"
+	putty-url -load wayne-SOCKS
+	}
+
 Function Select-AdministrativeTool
 	{
 	Param($Selection)
