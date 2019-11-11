@@ -8,11 +8,11 @@ Function Launch-Helpdesk
 	Start-Process "http://mishelp1:8080/WOListView.do?requestViewChanged=true&"
 	}
 
-Function Launch-CMBHS
+Function Launch-SmartCare
 	{
-	chrome "https://cmbhs.dshs.state.tx.us/cmbhs/WebPages/Default.aspx"
+	Start-Process "https://lifepathsc.smartcarenet.com/LifePathSmartCareTrain"
  	}
-
+        
 Function Launch-Anasazi
 	{
 	."C:\Program Files (x86)\Citrix\ICA Client\SelfServicePlugin\SelfService.exe" -launch -reg "Software\Microsoft\Windows\CurrentVersion\Uninstall\lifepath-80143580@@XenApp6.5.Live Anasazi Central" -startmenuShortcut
@@ -54,17 +54,24 @@ Function Launch-Video($VideoID,[switch]$VLC)
             }
         else
             {
-            $ie = new-object -ComObject "InternetExplorer.Application"
-            $ie.MenuBar = $False
-            $ie.StatusBar = $False
-            $ie.ToolBar = $False
-            $ie.AddressBar = $False
-            $ie.Top = 600
-            $ie.Left = 1100
-            $ie.Width = 480
-            $ie.Height = 298
-            $ie.Navigate($url)
-            $ie.visible = $True
+            try
+                {
+                $ie = new-object -ComObject "InternetExplorer.Application"
+                $ie.MenuBar = $False
+                $ie.StatusBar = $False
+                $ie.ToolBar = $False
+                $ie.AddressBar = $False
+                $ie.Top = 600
+                $ie.Left = 1100
+                $ie.Width = 480
+                $ie.Height = 298
+                $ie.Navigate($url)
+                $ie.visible = $True
+                }
+            catch
+                {
+                $_
+                }
             }
 	}
 

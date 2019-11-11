@@ -47,6 +47,7 @@ Set-Alias tools Select-AdministrativeTool
 Set-Alias screen Start-ScreenConnect
 Set-alias crd Launch-ChromeRemoteDesktop
 Set-Alias cmbhs Launch-CMBHS
+Set-Alias smart Launch-SmartCare
 Set-Alias dell Launch-DellSupport
 Set-Alias wayne SSH-Wayne
 Set-Alias socks SSH-Socks

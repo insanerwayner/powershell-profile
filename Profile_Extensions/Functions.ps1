@@ -176,7 +176,7 @@ Function Get-WeekOfYear
 
 Function Send-FileHome($FileName,$Destination)
 	{
-	kscp -P 2200 $filename wayne@darthwayne.duckdns.org:/home/wayne/$destination
+	pscp -P 2200 $filename wayne@darthwayne.duckdns.org:/home/wayne/$destination
 	}
 
 Function Get-IPInfo
@@ -291,7 +291,7 @@ Function Get-UserInfo
         $Descending=$False
         }
     $SearchString = "(&$($Name)$($Office)$($Department)$($Phone)$($Title)$($Phone))"
-    Get-ADUser -ldapfilter $SearchString -Properties Office, Department, Title, MobilePhone, OfficePhone | 
+    Get-ADUser -ldapfilter $SearchString -Properties Office, Department, Title, MobilePhone, OfficePhone -Server DC01 | 
         Select-Object Name, Title, Department, Office, OfficePhone, MobilePhone | 
             Sort-Object -Property $SortBy -Descending:$Descending | Format-Table
     }
