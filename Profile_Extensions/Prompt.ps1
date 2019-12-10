@@ -2,8 +2,10 @@ Function prompt
 	{
 	if ( $host.name -eq "ConsoleHost" )
 		{
-		$date = (get-date -format 'ddd MMM dd')
-		$time = (get-date -format ' hh:mm:ss tt')
+		#$date = (get-date -format 'ddd MMM dd')
+		#$time = (get-date -format ' hh:mm:ss tt')
+                $hostname = $ENV:computername
+                $hostname = $hostname.tolower()
 		$location = ((get-location).path).tostring()
 		$location = $location.replace('Microsoft.PowerShell.Core\FileSystem::','')
 		$location = $location.replace('misfs1\wreeves','NetHome')
@@ -18,7 +20,8 @@ Function prompt
 		$location = $location.replace('Scripts\Security','Security')
 		#$location = $location.replace('\','/')
 		#$location = $location.replace('C:','')
-		Write-Host $date -f Green -nonewline;write-host $time -f Yellow -nonewline;write-host " $location>" -f Cyan -NoNewline
+		#Write-Host $date -f Green -nonewline;write-host $time -f Yellow -nonewline;write-host " $location>" -f Cyan -NoNewline
+		Write-Host $ENV:username -f Yellow -nonewline;write-host "@$($hostname)" -f Yellow -nonewline;write-host ":" -f white -nonewline;write-host "$location" -f Cyan -NoNewline;write-host ">" -f white -NoNewLine
 		return " "
 		}
 	}

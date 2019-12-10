@@ -11,7 +11,7 @@ Set-Alias ll Get-ChildItem
 Set-Alias cping Ping-Constant
 Set-Alias sd Stop-Computer
 Set-Alias Sync Sync-Files
-Set-Alias ssh Enter-SSHSession
+#Set-Alias ssh Enter-SSHSession
 Set-Alias clone Enter-Clonezilla
 Set-Alias lastboot Get-LastBootTime
 Set-Alias grep Select-String
@@ -31,8 +31,9 @@ Set-Alias mismod Reload-misModules
 Set-Alias info Get-UserInfo
 Set-Alias dleases Get-DHCPServerv4Lease
 Set-Alias ":q" Quit-PowerShell
-Set-Alias rpass Reset-Password
-Set-Alias randp New-RandomPassword
+Set-Alias passwd Reset-Password
+Set-Alias rpass New-RandomPasswordClipboard
+
 
 # Launcher Aliases #
 Set-Alias ana Launch-Anasazi

@@ -10,17 +10,22 @@ Function Wake-BoardCloset
 
 Function Get-VerseoftheDay
 	{
+        $Width = switch ($Host.UI.RawUI.BufferSize.Width) {
+	    { 1..99 -contains $_ } { $_ }
+	    { $_ -ge 100 } { 100 }
+	    }
 	$Scripture = (Get-BibleVerse -VerseOfTheDay -Type Json | ConvertFrom-Json)[0] 
 	$book = $Scripture.bookname 
 	$chap = $Scripture.chapter 
 	$verse = $Scripture.verse 
 	$ref = $book+" "+$chap+":"+$verse
-	$txt = ('"' + $Scripture.text + '"').replace(' "','"') -Replace "  ", " "
-	$space = " "*($txt.length - $ref.length)
-        $border = ("="*$($txt.length)).substring(0, [System.Math]::Min(240, $txt.length))
+	$txt = ('"' + $Scripture.text + '"').replace(' "','"') -Replace "  ", " " | Wrap-Text -Width $Width
+	$length = ($txt | Measure-Object -Maximum -Property Length).Maximum
+	$space = " "*($length - $ref.length)
+        $border = ("="*$($length)).substring(0, [System.Math]::Min(240, $length))
         Write-Host $border -ForegroundColor DarkGray
-	Write-Host $txt -ForegroundColor White
-	Write-Host (" "*($txt.length))
+	$txt | % { Write-Host $_ -ForegroundColor White }
+	Write-Host (" "*($length))
 	Write-Host $space$ref -ForegroundColor Yellow
         Write-Host $border -ForegroundColor DarkGray
 	}
@@ -176,7 +181,7 @@ Function Get-WeekOfYear
 
 Function Send-FileHome($FileName,$Destination)
 	{
-	pscp -P 2200 $filename wayne@darthwayne.duckdns.org:/home/wayne/$destination
+	pscp -P 2233 $filename wayne@darthwayne.duckdns.org:/home/wayne/$destination
 	}
 
 Function Get-IPInfo
@@ -306,7 +311,7 @@ Function Send-Helpdesk
 <ul>
 <li><p>Use <strong>ManageEngine Service Desk</strong> on your desktop.</p></li>
 <li><p>Send email to <strong>mis_helpdesk@lifepathsystems.org</strong></p></li>
-<li><p>Call Ext <strong>6199</strong> (When the other two methods are unavailable or you are locked out)</p></li>
+<li><p><i>When the other two methods are unavailable or you are locked out</i>, Call Ext <strong>6199</strong> </p></li>
 </ul>
 '@
     $User = (Select-User $User).samaccountname
@@ -407,3 +412,42 @@ Function Open-RemoteFileWithVim
     vim $NewPath
     Remove-PSDrive -Name W
     }
+
+
+Function Wrap-Text 
+    {
+    [CmdletBinding()]
+    Param(
+        [parameter(Mandatory=1,ValueFromPipeline=1,ValueFromPipelineByPropertyName=1)]
+        [Object[]]$Chunk,
+        [int]$Width=$Host.UI.RawUI.BufferSize.Width
+    )
+    PROCESS 
+        {
+        $Lines = @()
+        foreach ($line in $chunk) 
+            {
+            $str = ''
+            $counter = 0
+            $line -split '\s+' | % {
+                $counter += $_.Length + 1
+                if ($counter -gt $Width) {
+                    $Lines += ,$str.trim()
+                    $str = ''
+                    $counter = $_.Length + 1
+                    }
+                $str = "$str$_ "
+                }
+            $Lines += ,$str.trim()
+            }
+        $Lines
+        }
+    }
+
+Function New-RandomPasswordClipboard
+    {
+    $Password = New-RandomPassword
+    $Password | clip
+    "Your temporary password is: $($Password)" | cowsay
+    }
+

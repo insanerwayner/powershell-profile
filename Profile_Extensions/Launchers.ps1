@@ -10,7 +10,11 @@ Function Launch-Helpdesk
 
 Function Launch-SmartCare
 	{
-	Start-Process "https://lifepathsc.smartcarenet.com/LifePathSmartCareTrain"
+        param(
+            [ValidateSet("Prod", "Train", "Setup", "QA")]
+            $System="PROD"
+            )
+	Start-Process "https://lifepathsc.smartcarenet.com/LifePathSmartCare$($System)"
  	}
         
 Function Launch-Anasazi
