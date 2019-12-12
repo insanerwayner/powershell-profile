@@ -21,7 +21,13 @@ Function prompt
 		#$location = $location.replace('\','/')
 		#$location = $location.replace('C:','')
 		#Write-Host $date -f Green -nonewline;write-host $time -f Yellow -nonewline;write-host " $location>" -f Cyan -NoNewline
-		Write-Host $ENV:username -f Yellow -nonewline;write-host "@$($hostname)" -f Yellow -nonewline;write-host ":" -f white -nonewline;write-host "$location" -f Cyan -NoNewline;write-host ">" -f white -NoNewLine
+		Write-Host $ENV:username -f Yellow -nonewline;write-host "@$($hostname) " -f Yellow -nonewline;write-host "$location" -f Cyan -NoNewline;
+                if ( Get-GitStatus)
+                    {
+                    $GitBranch = Get-GitBranch
+                    Write-Host "[$($GitBranch)]" -f Green -NoNewLine
+                    }
+                #write-host " " -NoNewLine
 		return " "
 		}
 	}
