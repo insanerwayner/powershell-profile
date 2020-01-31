@@ -20,6 +20,7 @@ Function Get-VerseoftheDay
 	$verse = $Scripture.verse 
 	$ref = $book+" "+$chap+":"+$verse
 	$txt = ('"' + $Scripture.text + '"').replace(' "','"') -Replace "  ", " " | Wrap-Text -Width $Width
+        #$txt = $Scripture.text | Wrap-Text -Width $Width
 	$length = ($txt | Measure-Object -Maximum -Property Length).Maximum
 	$space = " "*($length - $ref.length)
         $border = ("="*$($length)).substring(0, [System.Math]::Min(240, $length))
