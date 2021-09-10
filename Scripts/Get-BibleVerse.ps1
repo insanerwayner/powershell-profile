@@ -50,29 +50,29 @@
  
         [Parameter(ParameterSetName="Default")]
         [ValidateScript({$_ -gt -1})]
-        [int]$Verse=1,
+        [string]$Verse=1,
  
-        [ValidateSet("Json","Xml","Text")]
-        [string]$Type="Text",
+        [ValidateSet("json","xml","text")]
+        [string]$Type="text",
  
-        [ValidateSet("Full","Para","Plain")]
-        [string]$Formatting="Plain"
+        [ValidateSet("full","para","plain")]
+        [string]$Formatting="plain"
     )
  
     $url = "http://labs.bible.org/api/?passage="
- 
     if($PSCmdlet.ParameterSetName -eq "Votd") {
         $url += "votd"
     } elseif ($PSCmdlet.ParameterSetName -eq "Random") {
         $url += "random"
     } else {
+	$Book =  (Get-Culture).TextInfo.ToTitleCase($Book)
         $url += "$($Book)+$($Chapter)"
         if($Verse) {
             $url += ":$($Verse)"
         }
     }
     $url += "&type=$($Type)&formatting=$($Formatting)"
-    $url = $url.ToLower()
+    #$url = $url.ToLower()
     $result = Invoke-WebRequest -Uri $url
     if($result) {
         $result.Content

@@ -1,5 +1,19 @@
 Function prompt
 	{
+        function OnViModeChange 
+            {
+            if ($args[0] -eq 'Command') 
+                {
+		# Set the cursor to a blinking block.
+		Write-Host -NoNewLine "`e[1 q"
+		} 
+	    else 
+		{
+		# Set the cursor to a blinking line.
+		Write-Host -NoNewLine "`e[5 q"
+		}
+            }
+        Set-PSReadLineOption -EditMode vi -ViModeIndicator Script -ViModeChangeHandler $Function:OnViModeChange
 	if ( $host.name -eq "ConsoleHost" )
 		{
 		#$date = (get-date -format 'ddd MMM dd')
@@ -21,7 +35,8 @@ Function prompt
 		#$location = $location.replace('\','/')
 		#$location = $location.replace('C:','')
 		#Write-Host $date -f Green -nonewline;write-host $time -f Yellow -nonewline;write-host " $location>" -f Cyan -NoNewline
-		Write-Host $ENV:username -f Yellow -nonewline;write-host "@$($hostname) " -f Yellow -nonewline;write-host "$location" -f Cyan -NoNewline;
+		#Write-Host $ENV:username -f Yellow -nonewline;write-host "@$($hostname) " -f Yellow -nonewline;write-host "$location" -f Cyan -NoNewline;
+		Write-Host "$location" -f Cyan -NoNewline;
                 if ( Get-GitStatus)
                     {
                     $GitBranch = Get-GitBranch

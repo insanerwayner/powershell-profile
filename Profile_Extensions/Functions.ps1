@@ -1,9 +1,4 @@
-﻿Function Quit-PowerShell
-    {
-    exit
-    }
-
-Function Wake-BoardCloset
+﻿Function Wake-BoardCloset
 	{
 	Send-WOL 48:4D:7E:CF:41:4A
 	}
@@ -14,7 +9,7 @@ Function Get-VerseoftheDay
 	    { 1..99 -contains $_ } { $_ }
 	    { $_ -ge 100 } { 100 }
 	    }
-	$Scripture = (Get-BibleVerse -VerseOfTheDay -Type Json | ConvertFrom-Json)[0] 
+	$Scripture = (Get-BibleVerse -VerseOfTheDay -Type json | ConvertFrom-Json)[0] 
 	$book = $Scripture.bookname 
 	$chap = $Scripture.chapter 
 	$verse = $Scripture.verse 
@@ -106,14 +101,16 @@ Function Sync-Files
         param(
             [Switch]$Download
             )
+        $destination='C:\Users\wreeves\OneDrive - Lifepath Systems\Documents'
         If ( !$Download )
             {
             Get-ChildItem $Docs\"Remote Assistance Logs" | Remove-Item -Confirm:$False
-            robocopy C:\Users\wreeves\Documents \\misfs1\wreeves\Documents /MIR /FFT /Z /XA:H /W:5
+            robocopy C:\Users\wreeves\Documents $destination /MIR /FFT /XJ /Z /XA:H /W:5
+	    robocopy C:\wsl\homebackups 'C:\Users\wreeves\OneDrive - Lifepath Systems\homebackups'
             }
         Else 
             {
-            robocopy \\misfs1\wreeves\Documents C:\Users\wreeves\Documents /MIR /FFT /Z /XA:H /W:5
+            robocopy $destination C:\Users\wreeves\Documents /MIR /FFT /XJ /Z /XA:H /W:5
             }
 	}
 
@@ -187,8 +184,8 @@ Function Send-FileHome($FileName,$Destination)
 
 Function Get-IPInfo
     {
-    param($ComputerName="localhost")
-    get-wmiobject win32_networkadapterconfiguration -computername $computername | 
+    param($ComputerName=".")
+    get-ciminstance win32_networkadapterconfiguration -computername $computername | 
         Where-Object { $_.ipaddress -ne $null } | 
             Select-Object Description, IPaddress, IPSubnet, DefaultIPGateway, DNSServerSearchOrder, DNSDomain, MacAddress
     }
@@ -379,10 +376,10 @@ Function Get-UpcomingAppointments
 
 Function Clean-TempAndDownloads
     {
-    "C:\Temp\", "C:\users\wreeves\Downloads\" | foreach `
+    "C:\Users\wreeves\Documents\Temp\", "C:\users\wreeves\Downloads\" | foreach `
         {
         $Folder = $_
-        "*.jnlp", "SKM*.PDF" | foreach `
+        "*.jnlp", "SKM*.PDF", "*Mobile*.PDF", "phones.*report.html" | foreach `
             {
             $FileType = $_
             Get-ChildItem -Path (Join-Path $Folder $Filetype) | Remove-Item
@@ -452,3 +449,34 @@ Function New-RandomPasswordClipboard
     "Your temporary password is: $($Password)" | cowsay
     }
 
+Function Get-PassNotChangedCount
+    {
+    (get-aduser -filter * -properties passwordlastset -server dc02 | ? { $_.Enabled -eq $true -and $_.passwordlastset -eq $null } ).count
+    }
+
+Function Test-ADAuthentication 
+    {
+    param(
+        $username,
+        $password)
+        
+    (New-Object DirectoryServices.DirectoryEntry "",$username,$password).psbase.name -ne $null
+    }
+
+Function Clean-Computer
+    {
+    sudo bleachbit.exe -c --preset
+    }
+
+function Set-DefaultBrowser
+    {
+    $regKey      = "HKCU:\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\{0}\UserChoice"
+    $FileAsocRegKey = "hkcu:\Software\Classes\{0}\OpenWithProgids"
+    $regKeyHttp  = $regKey -f 'http'
+    $regKeyHttps = $regKey -f 'https'
+    $FileAssocHTM = $FileAssocRegKey -f '.htm'
+    $FileAssocHTML = $FileAssocRegKey -f '.html'
+
+    Set-ItemProperty $regKeyHttp  -name ProgId BraveHTML.ZCEUGB4EYGF3ID4KTQQLMBIMYE
+    Set-ItemProperty $regKeyHttps -name ProgId BraveHTML.ZCEUGB4EYGF3ID4KTQQLMBIMYE
+    } 

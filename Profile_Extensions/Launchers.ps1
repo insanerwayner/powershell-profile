@@ -11,7 +11,7 @@ Function Launch-Helpdesk
 Function Launch-SmartCare
 	{
         param(
-            [ValidateSet("Prod", "Train", "Setup", "QA")]
+            [ValidateSet("Prod", "PreProd", "Train", "Setup", "QA")]
             $System="PROD"
             )
 	Start-Process "https://lifepathsc.smartcarenet.com/LifePathSmartCare$($System)"
@@ -212,7 +212,7 @@ Function Start-Countdown
         [string]$Time = "5:00PM",
         [string]$Message = "Go Home!"
         )
-    $ClosingTime = Get-Date "$(Get-Date -Format "MM-dd-yy") $($Time)"
+    $ClosingTime = Get-Date $Time
     while ( (Get-Date) -le $ClosingTime )
             {
             $Date = Get-Date 

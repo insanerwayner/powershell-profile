@@ -1,20 +1,33 @@
 # Profile Extensions
-
+$env:HOME = "C:\Users\wreeves"
+$ENV:STARSHIP_CONFIG = "$HOME\.starship\config.toml"
+cd ~
+If ( $Host.Version.Major -eq 7 )
+	{
+	Import-Module activedirectory, PoshKeePass -UseWindowsPowershell -WarningAction SilentlyContinue
+	}
 Get-ChildItem ( Join-Path $home "Documents\WindowsPowerShell\Profile_Extensions" ) -File *".ps1" | ForEach-Object { . $_.FullName; Set-Variable -Name $_.basename -Value $_.FullName }
 
+# PSReadline
+Set-PSReadlineOption -editmode vi
+
 # Startup
-Import-Module activedirectory
-If ( Test-Connection MISHYPER01 -Quiet -Count 1 )
-    {
-    Import-Module Hyper-V -RequiredVersion 1.1
-    }
+#Import-Module activedirectory
+#If ( Test-Connection MISHYPER01 -Quiet -Count 1 )
+#    {
+#    Import-Module Hyper-V -RequiredVersion 1.1
+#    }
 #If ( Test-Connection MISEXCH01 -Quiet -Count 1 )
 #    {
 #    Import-Module misExchange -DisableNameChecking
 #    }
-If ( Test-Path $NetHome)
+If ( Test-Path $NetHome )
     {
-    $null = Sync-Files
+    $scriptblock = { 
+            Get-ChildItem $Docs\"Remote Assistance Logs" | Remove-Item -Confirm:$False
+            robocopy C:\Users\wreeves\Documents \\misfs1\wreeves\Documents /MIR /FFT /Z /XA:H /W:5
+	}
+    $Null = Start-Job -Scriptblock $scriptblock -Name SyncFiles
     }
 If ( Test-Connection labs.bible.org -Quiet -Count 1 )
     {
@@ -28,4 +41,6 @@ if (Test-Path($ChocolateyProfile)) {
   Import-Module "$ChocolateyProfile"
 }
 
-Import-Module posh-git
+#Import-Module posh-git
+#Set-DefaultBrowser
+Invoke-Expression (&starship init powershell)

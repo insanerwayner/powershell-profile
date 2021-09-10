@@ -1,4 +1,4 @@
-## Aliases ##
+# Aliases 
 Set-Alias key Get-Key
 Set-Alias assist Get-RemoteConnection
 Set-Alias unlock Unlock-aduser
@@ -34,8 +34,11 @@ Set-Alias ":q" Quit-PowerShell
 Set-Alias passwd Reset-Password
 Set-Alias rpass New-RandomPasswordClipboard
 
+# Function Type Aliases
+Function ~ { cd ~ }
 
-# Launcher Aliases #
+
+# Launcher Aliases 
 Set-Alias ana Launch-Anasazi
 Set-Alias inventory Launch-AssetInventory
 Set-Alias paylocity Launch-Paylocity
@@ -61,4 +64,5 @@ Set-Alias radio Launch-Radio
 Set-Alias tabs Launch-DefaultTabs
 Set-Alias helpdesk Launch-Helpdesk
 Set-Alias hd Launch-Helpdesk
+Set-Alias vim nvim
 Set-Alias rvim Open-RemoteFileWithVim
