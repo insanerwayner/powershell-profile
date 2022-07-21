@@ -49,35 +49,12 @@ Function Manage-EqualLogic
 	."$Scripts\Java\groupmgr.jnlp"
 	}
 
-Function Launch-Video($VideoID,[switch]$VLC)
+Function Launch-Video($VideoID)
 	{
 	$url = "https://www.youtube.com/embed/$VideoID"
-        if ( $VLC )
-            {
-            ."C:\Program Files\VideoLAN\vlc\vlc.exe" $url
-            }
-        else
-            {
-            try
-                {
-                $ie = new-object -ComObject "InternetExplorer.Application"
-                $ie.MenuBar = $False
-                $ie.StatusBar = $False
-                $ie.ToolBar = $False
-                $ie.AddressBar = $False
-                $ie.Top = 600
-                $ie.Left = 1100
-                $ie.Width = 480
-                $ie.Height = 298
-                $ie.Navigate($url)
-                $ie.visible = $True
-                }
-            catch
-                {
-                $_
-                }
-            }
-	}
+    	#."C:\Program Files\VideoLAN\vlc\vlc.exe" $url
+    	."C:\Users\wreeves\scoop\shims\mpv.exe" $url
+       	}
 
 Function Search-YouTube($query, $results=10,[switch]$VLC)
     {
@@ -202,6 +179,7 @@ Function Select-AdministrativeTool
 			{
 			Write-Host "Launching $($Selection.BaseName)" -ForegroundColor Green
 			.($Selection.Fullname)
+			#echo $Selection
 			}
 	}
 

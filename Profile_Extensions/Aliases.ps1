@@ -33,6 +33,8 @@ Set-Alias dleases Get-DHCPServerv4Lease
 Set-Alias ":q" Quit-PowerShell
 Set-Alias passwd Reset-Password
 Set-Alias rpass New-RandomPasswordClipboard
+Set-Alias xchange Connect-ExchangeOnline
+Set-Alias fold Wrap-Text
 
 # Function Type Aliases
 Function ~ { cd ~ }

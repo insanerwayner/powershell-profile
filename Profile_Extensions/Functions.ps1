@@ -184,7 +184,7 @@ Function Send-FileHome($FileName,$Destination)
 
 Function Get-IPInfo
     {
-    param($ComputerName=".")
+    param($ComputerName="$env:COMPUTERNAME")
     get-ciminstance win32_networkadapterconfiguration -computername $computername | 
         Where-Object { $_.ipaddress -ne $null } | 
             Select-Object Description, IPaddress, IPSubnet, DefaultIPGateway, DNSServerSearchOrder, DNSDomain, MacAddress
@@ -379,7 +379,7 @@ Function Clean-TempAndDownloads
     "C:\Users\wreeves\Documents\Temp\", "C:\users\wreeves\Downloads\" | foreach `
         {
         $Folder = $_
-        "*.jnlp", "SKM*.PDF", "*Mobile*.PDF", "phones.*report.html" | foreach `
+        "*.jnlp", "SKM*.PDF", "*Mobile*.PDF", "phones.*report.html", "*.eml" | foreach `
             {
             $FileType = $_
             Get-ChildItem -Path (Join-Path $Folder $Filetype) | Remove-Item

@@ -5,8 +5,14 @@ cd ~
 If ( $Host.Version.Major -eq 7 )
 	{
 	Import-Module activedirectory, PoshKeePass -UseWindowsPowershell -WarningAction SilentlyContinue
+	Set-PSReadLineOption -PredictionSource History
+	$PSStyle.Formatting.TableHeader = $PSStyle.Foreground.BrightYellow + $PSStyle.Bold
+	$PSStyle.Formatting.FormatAccent = $PSStyle.ForeGround.BrightYellow + $PSStyle.Bold
+	$PSStyle.Formatting.Error = $PSStyle.ForeGround.Yellow + $PSStyle.Bold
+	set-psreadlineoption -ContinuationPrompt ';  '
 	}
-Get-ChildItem ( Join-Path $home "Documents\WindowsPowerShell\Profile_Extensions" ) -File *".ps1" | ForEach-Object { . $_.FullName; Set-Variable -Name $_.basename -Value $_.FullName }
+Get-ChildItem ( Join-Path $home "Documents\WindowsPowerShell\Profile_Extensions" ) -File *".ps1" | `
+	ForEach-Object { . $_.FullName; Set-Variable -Name $_.basename -Value $_.FullName }
 
 # PSReadline
 Set-PSReadlineOption -editmode vi
@@ -33,6 +39,12 @@ If ( Test-Connection labs.bible.org -Quiet -Count 1 )
     {
     Get-VerseoftheDay
     }
+## CD-extras
+$cde = @{
+	AUTO_CD = $true
+	ColorCompletion = $true
+}
+Import-Module cd-extras
 Clean-TempAndDownloads
 
 # Chocolatey Profile
