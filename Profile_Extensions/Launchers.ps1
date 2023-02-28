@@ -14,7 +14,7 @@ Function Launch-SmartCare
             [ValidateSet("Prod", "PreProd", "Train", "Setup", "QA")]
             $System="PROD"
             )
-	Start-Process "https://lifepathsc.smartcarenet.com/LifePathSmartCare$($System)"
+	Start-Process "https://lifepathsc.smartcarenet.com/LifePathSmartCare$($System)/SSO.aspx"
  	}
         
 Function Launch-Anasazi
