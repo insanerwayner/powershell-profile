@@ -294,7 +294,7 @@ Function Get-UserInfo
         $Descending=$False
         }
     $SearchString = "(&$($Name)$($Office)$($Department)$($Phone)$($Title)$($Phone))"
-    Get-ADUser -ldapfilter $SearchString -Properties Office, Department, Title, MobilePhone, OfficePhone -Server DC01 | 
+    Get-ADUser -ldapfilter $SearchString -Properties Office, Department, Title, MobilePhone, OfficePhone -Server dom01 | 
         Select-Object Name, Title, Department, Office, OfficePhone, MobilePhone | 
             Sort-Object -Property $SortBy -Descending:$Descending | Format-Table
     }

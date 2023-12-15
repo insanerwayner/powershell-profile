@@ -44,6 +44,7 @@ Function ~ { cd ~ }
 Set-Alias ana Launch-Anasazi
 Set-Alias inventory Launch-AssetInventory
 Set-Alias paylocity Launch-Paylocity
+Set-Alias paycom Launch-Paycom
 Set-Alias far Launch-Far
 Set-Alias np notepad
 Set-Alias san Manage-EqualLogic

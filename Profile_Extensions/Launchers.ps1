@@ -34,6 +34,11 @@ Function Launch-Paylocity
 	Start-Process "https://login.paylocity.com/Escher/Escher_WebUI/views/login/login.aspx"
 	}
 
+Function Launch-Paycom
+	{
+	Start-Process "https://www.paycomonline.net/v4/ee"
+	}
+
 Function Enter-Clonezilla
 	{
 	Enter-SSHSession -User administrator -Hostname 192.168.103.254 -Password ( Get-XMLPassword -Name Clonezilla -Type Password -AsPlainText $True )

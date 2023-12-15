@@ -18,15 +18,6 @@ Get-ChildItem ( Join-Path $home "Documents\WindowsPowerShell\Profile_Extensions"
 Set-PSReadlineOption -editmode vi
 
 # Startup
-#Import-Module activedirectory
-#If ( Test-Connection MISHYPER01 -Quiet -Count 1 )
-#    {
-#    Import-Module Hyper-V -RequiredVersion 1.1
-#    }
-#If ( Test-Connection MISEXCH01 -Quiet -Count 1 )
-#    {
-#    Import-Module misExchange -DisableNameChecking
-#    }
 If ( Test-Path $NetHome )
     {
     $scriptblock = { 
@@ -44,7 +35,7 @@ $cde = @{
 	AUTO_CD = $true
 	ColorCompletion = $true
 }
-Import-Module cd-extras
+Import-Module cd-extras, posh-git
 Clean-TempAndDownloads
 
 # Chocolatey Profile
